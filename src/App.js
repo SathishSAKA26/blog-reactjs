@@ -7,10 +7,12 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound"
 // Add Routes the react dom
 import { Routes, Route } from "react-router-dom";
+import NavBar from "./components/NavBar";
 
 const App = () => {
   return (
-    <div className="text-2xl my-5 font-bold underline">
+    <div className="main bg-gray-950">
+      <NavBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/detail/:id" element={<Detail />} />
