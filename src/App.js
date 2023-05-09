@@ -1,18 +1,19 @@
-import React from "react";
+import React, { useState } from "react";
 // Add pages 
 import Home from "./pages/Home";
 import Detail from "./pages/Detail";
 import AddEditBlog from "./pages/AddEditBlog";
 import About from "./pages/About";
-import NotFound from "./pages/NotFound"
+import NotFound from "./pages/NotFound";
 // Add Routes the react dom
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
 
 const App = () => {
+  const [active, setActive] = useState("home");
   return (
-    <div className="main bg-gray-950">
-      <NavBar />
+    <div className="main">
+      <NavBar setActive={setActive} active={active} />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/detail/:id" element={<Detail />} />
