@@ -5,21 +5,25 @@ import Detail from "./pages/Detail";
 import AddEditBlog from "./pages/AddEditBlog";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
 // Add Routes the react dom
 import { Routes, Route } from "react-router-dom";
 import NavBar from "./components/NavBar";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
   const [active, setActive] = useState("home");
   return (
     <div className="main">
       <NavBar setActive={setActive} active={active} />
+      <ToastContainer position="top-center" />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/detail/:id" element={<Detail />} />
         <Route path="/create" element={<AddEditBlog />} />
         <Route path="/update/:id" element={<AddEditBlog />} />
         <Route path="/about" element={<About />} />
+        <Route path="/auth" element={<Auth setActive={setActive} />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </div>
