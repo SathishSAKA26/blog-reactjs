@@ -17,4 +17,6 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-export default { auth, db, storage };
+export { auth, db, storage };
+
+export default auth;

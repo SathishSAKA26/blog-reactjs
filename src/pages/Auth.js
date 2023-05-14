@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import auth from "../firebase"
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import auth from "../firebase";
+
 
 const initialState = {
   firstName: "",
@@ -20,19 +22,22 @@ const Auth = ({ setActive }) => {
   const { email, passWord, firstName, lastName, confirmPassword } = state;
 
   const handleChange = (e) => {
-    setState({ ...state, [e.target.name]: e.target.value })
-  }
+    setState({ ...state, [e.target.name]: e.target.value });
+  };
 
   const handleAuth = async (e) => {
     e.preventDefault();
     if (!signUp) {
-
     } else {
       if (passWord !== confirmPassword) {
-        return toast.error("Password don't match")
+        return toast.error("Password don't match");
       }
-      if (firstName && lastName && passWord && email) {
-        const { user } = await createUserWithEmailAndPassWord(auth, email, passWord);
+      if (firstName && lastName && email && passWord) {
+        const { user } = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          passWord,
+        );
         await updateProfile(user, { displayName: `${firstName} ${lastName}` });
         setActive("home");
       } else {
@@ -41,14 +46,13 @@ const Auth = ({ setActive }) => {
     }
     navigate("/");
   };
-
   return (
     <div className="pt-28 text-center w-full">
       <div className="text-white text-xl font-bold">
         {!signUp ? "Sign-In" : "Sign-Up"}
       </div>
       <div className="w-1/2 mx-auto mt-6">
-        <form className="input" onChange={handleAuth}>
+        <form className="input" onSubmit={handleAuth}>
           {signUp && (
             <div className="flex justify-between">
               <div className="">
