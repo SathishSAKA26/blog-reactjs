@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
 import auth from "../firebase";
 
 
@@ -28,6 +28,12 @@ const Auth = ({ setActive }) => {
   const handleAuth = async (e) => {
     e.preventDefault();
     if (!signUp) {
+      if (email && passWord) {
+        const { user } = await signInWithEmailAndPassword(auth, email, passWord);
+        setActive("home");
+      } else {
+        return toast.error("All fields are mandatory to fill");
+      }
     } else {
       if (passWord !== confirmPassword) {
         return toast.error("Password don't match");
