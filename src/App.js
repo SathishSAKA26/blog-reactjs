@@ -7,7 +7,7 @@ import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 // Add Routes the react dom
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import NavBar from "./components/NavBar";
 import { ToastContainer } from "react-toastify";
 import auth from "./firebase";
@@ -43,10 +43,10 @@ const App = () => {
       <NavBar setActive={setActive} active={active} user={user} handleLogout={handleLogout} />
       <ToastContainer position="top-center" />
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/detail/:id" element={<Detail />} />
-        <Route path="/create" element={<AddEditBlog />} />
-        <Route path="/update/:id" element={<AddEditBlog />} />
+        <Route path="/" element={<Home setActive={setActive} user={user} />} />
+        <Route path="/detail/:id" element={<Detail setActive={setActive} />} />
+        <Route path="/create" element={user?.uid ? <AddEditBlog user={user} /> : <Navigate to="/" />} /> //user && user.uid
+        <Route path="/update/:id" element={user?.uid ? <AddEditBlog user={user} /> : <Navigate to="/" />} />
         <Route path="/about" element={<About />} />
         <Route path="/auth" element={<Auth setActive={setActive} />} />
         <Route path="*" element={<NotFound />} />

@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import ReactTagInput from '@pathofdev/react-tag-input';
 import "@pathofdev/react-tag-input/build/index.css";
-import { storage } from '../firebase';
+import { db, storage } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 
 const initialState = {
   title: "",
@@ -21,10 +23,12 @@ const categoryOptions = [
   "Business",
 ]
 
-const AddEditBlog = () => {
+const AddEditBlog = ({ user }) => {
   const [form, setForm] = useState(initialState);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(null);
+
+  const navigate = useNavigate();
 
   const { title, tags, trending, category, description } = form;
 
@@ -64,13 +68,39 @@ const AddEditBlog = () => {
 
   console.log('form', form);
 
-  const handleChange = (e) => { };
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
-  const handleTags = () => { };
+  const handleTags = (tags) => {
+    setForm({ ...form, tags });
+  };
 
-  const handleTrending = () => { };
+  const handleTrending = (e) => {
+    setForm({ ...form, trending: e.target.value });
+  };
 
-  const onCategoryChange = () => { };
+  const onCategoryChange = (e) => {
+    setForm({ ...form, category: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (category && tags && title && description && trending && file) {
+      try {
+        await addDoc(collection(db, "blogs"), {
+          ...form,
+          timestamp: serverTimestamp(),
+          author: user.displayName,
+          userId: user.uid
+        })
+      } catch (err) {
+        console.log(err);
+      }
+    }
+    navigate("/");
+  };
+
   return (
     <div className='pt-16 text-center text-white'>
       <div className="main-container">
@@ -81,7 +111,7 @@ const AddEditBlog = () => {
         </div>
         <div className="create">
           <section className="input-container">
-            <form className="input">
+            <form className="input" onSubmit={handleSubmit}>
               {/* title */}
               <div className="py-3">
                 <input
@@ -96,7 +126,11 @@ const AddEditBlog = () => {
               {/* tags */}
               <div className="w-full">
                 <div className="w-[50%] py-3 mx-auto text-lg font-semibold">
-                  <ReactTagInput tags={tags} placeholder='Tags...' onChange={handleTags} />
+                  <ReactTagInput
+                    tags={tags}
+                    placeholder='Tags...'
+                    onChange={handleTags}
+                  />
                 </div>
               </div>
               {/* radio button */}
