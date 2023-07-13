@@ -46,7 +46,7 @@ const App = () => {
         <Route path="/" element={<Home setActive={setActive} user={user} />} />
         <Route path="/detail/:id" element={<Detail setActive={setActive} />} />
         <Route path="/create" element={user?.uid ? <AddEditBlog user={user} /> : <Navigate to="/" />} /> //user && user.uid
-        <Route path="/update/:id" element={user?.uid ? <AddEditBlog user={user} /> : <Navigate to="/" />} />
+        <Route path="/update/:id" element={user?.uid ? <AddEditBlog user={user} setActive={setActive} /> : <Navigate to="/" />} />
         <Route path="/about" element={<About />} />
         <Route path="/auth" element={<Auth setActive={setActive} />} />
         <Route path="*" element={<NotFound />} />

@@ -7,7 +7,7 @@ import { MdOutlineModeEdit } from "react-icons/md";
 const BlogSection = ({ blogs, user, handleDelete }) => {
   const userId = user?.uid;
   return (
-    <div className='w-[80%]'>
+    <div className="">
       <div className="text-2xl font-bold text-start py-3">Daily Blogs</div>
       <hr className="text-gray-600 pb-2" />
       {blogs?.map((item) => (
@@ -46,12 +46,14 @@ const BlogSection = ({ blogs, user, handleDelete }) => {
                   size="25px"
                   onClick={() => handleDelete(item.id)}
                 />
-                <MdOutlineModeEdit
-                  className='text-green-700'
-                  name='edit'
-                  style={{ cursor: "pointer" }}
-                  size="25px"
-                />
+                <Link to={`/update/${item.id}`}>
+                  <MdOutlineModeEdit
+                    className='text-green-700'
+                    name='edit'
+                    style={{ cursor: "pointer" }}
+                    size="25px"
+                  />
+                </Link>
               </div>
             )}
           </article>

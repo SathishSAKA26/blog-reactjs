@@ -2,9 +2,10 @@ import React, { useEffect, useState } from 'react';
 import ReactTagInput from '@pathofdev/react-tag-input';
 import "@pathofdev/react-tag-input/build/index.css";
 import { db, storage } from '../firebase';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { addDoc, collection, doc, getDoc, serverTimestamp, updateDoc } from 'firebase/firestore';
+// import { toast } from 'react-toastify';
 
 const initialState = {
   title: "",
@@ -23,10 +24,12 @@ const categoryOptions = [
   "Business",
 ]
 
-const AddEditBlog = ({ user }) => {
+const AddEditBlog = ({ user, setActive }) => {
   const [form, setForm] = useState(initialState);
   const [file, setFile] = useState(null);
   const [progress, setProgress] = useState(null);
+
+  const { id } = useParams();
 
   const navigate = useNavigate();
 
@@ -58,6 +61,7 @@ const AddEditBlog = ({ user }) => {
       },
         () => {
           getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            alert("The Image upload completed successfully")
             setForm((prev) => ({ ...prev, imgUrl: downloadURL }));
           });
         }
@@ -65,6 +69,19 @@ const AddEditBlog = ({ user }) => {
     };
     file && uploadFile();
   }, [file]);
+
+  useEffect(() => {
+    id && getBlogDetail();
+  }, [id]);
+
+  const getBlogDetail = async () => {
+    const docRef = doc(db, "blog", id);
+    const snapshot = await getDoc(docRef);
+    if (snapshot.exists()) {
+      setForm({ ...snapshot.data() });
+    }
+    setActive(null);
+  };
 
   console.log('form', form);
 
@@ -87,17 +104,35 @@ const AddEditBlog = ({ user }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (category && tags && title && description && trending && file) {
-      try {
-        await addDoc(collection(db, "blogs"), {
-          ...form,
-          timestamp: serverTimestamp(),
-          author: user.displayName,
-          userId: user.uid
-        })
-      } catch (err) {
-        console.log(err);
+      if (!id) {
+        try {
+          await addDoc(collection(db, "blogs"), {
+            ...form,
+            timestamp: serverTimestamp(),
+            author: user.displayName,
+            userId: user.uid
+          })
+          alert("Blogs created successfully");
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        try {
+          await updateDoc(doc(db, "blogs", id), {
+            ...form,
+            timestamp: serverTimestamp(),
+            author: user.displayName,
+            userId: user.uid
+          })
+          alert("Blogs updated successfully");
+        } catch (err) {
+          console.log(err);
+        }
       }
+    } else {
+      return alert("All fields are mandatory to fill");
     }
+
     navigate("/");
   };
 
@@ -106,7 +141,7 @@ const AddEditBlog = ({ user }) => {
       <div className="main-container">
         <div className="">
           <div className="text-2xl font-extrabold">
-            Create Blogs
+            {id ? "Update Blogs" : "Create Blogs"}
           </div>
         </div>
         <div className="create">
@@ -162,7 +197,9 @@ const AddEditBlog = ({ user }) => {
               </div>
               {/* Add Button */}
               <div className="pt-3">
-                <button className="bg-orange-600 text-xl font-bold py-2 px-10 cursor-pointer rounded-sm " type="submit" disabled={progress !== null && progress < 100}>Submit</button>
+                <button className="bg-orange-600 text-xl font-bold py-2 px-10 cursor-pointer rounded-sm " type="submit" disabled={progress !== null && progress < 100}>
+                  {id ? "Update" : "Submit"}
+                </button>
               </div>
             </form>
           </section>

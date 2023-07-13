@@ -1,11 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from "../firebase";
+import Tags from '../components/Tags';
+import MostPopular from '../components/MostPopular';
 
 const Detail = ({ setActive }) => {
   const { id } = useParams();
   const [blog, setBlog] = useState(null);
+  const [blogs, setBlogs] = useState([]);
+  const [tags, setTags] = useState([]);
+
+  useEffect(() => {
+    const getBlogData = async () => {
+      const blogRef = collection(db, "blogs");
+      const blogs = await getDocs(blogRef);
+      setBlogs(blogs.docs.map((doc) => ({ id: doc.id, ...doc.data() })));
+      let tags = [];
+      blogs.docs.map((doc) => tags.push(...doc.get("tags")));
+      let uniqueTags = [...new Set(tags)];
+      setTags(uniqueTags);
+    };
+
+    getBlogData();
+  }, []);
 
   useEffect(() => {
     id && getBlogDetail();
@@ -27,8 +45,8 @@ const Detail = ({ setActive }) => {
         </div>
       </div>
       <div className="pt-16">
-        <div className="flex px-14 pt-16">
-          <div className="w-1/2">
+        <div className="w-full flex px-14 pt-16 justify-between">
+          <div className="w-[60%]">
             <span className="text-start flex items-center">
               By<p className="text-gray-300 text-base font-semibold m-3">{blog?.author}</p>- &nbsp;
               {blog?.timestamp.toDate().toDateString()}
@@ -36,9 +54,9 @@ const Detail = ({ setActive }) => {
             <hr />
             <p className="text-start pt-3 text-slate-300">{blog?.description}</p>
           </div>
-          <div className="w-1/2">
-            <h2>Tags</h2>
-            <h2>Most Popular</h2>
+          <div className="w-[30%]">
+            <Tags tags={tags} />
+            <MostPopular blogs={blogs} />
           </div>
         </div>
       </div>
