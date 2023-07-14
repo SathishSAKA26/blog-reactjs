@@ -15,8 +15,8 @@ const Home = ({ setActive, user }) => {
   const [trendBlogs, setTrendBlogs] = useState([]);
 
   const getTrendingBlogs = async () => {
-    const blogs = collection(db, "blogs");
-    const trendQuery = query(blogsRef, where("trending", "==", "yes"));
+    const blogRef = collection(db, "blogs");
+    const trendQuery = query(blogRef, where("trending", "==", "yes"));
     const querySnapshot = await getDocs(trendQuery);
     let trendBlogs = [];
     querySnapshot.forEach((doc) => {
@@ -71,7 +71,7 @@ const Home = ({ setActive, user }) => {
   console.log("blogs", blogs);
 
   return (
-    <div className='pt-16 text-center text-white mx-6'>
+    <div className='text-center text-white mx-6'>
       <div className="titles-section">
         <div className="trending-title">
           <Trending blogs={trendBlogs} />

@@ -8,7 +8,7 @@ const NavBar = ({ active, setActive, user, handleLogout }) => {
   const userId = user?.uid;
 
   return (
-    <div className="bg-green-700 w-full h-14 fixed">
+    <div className="bg-green-700 w-full h-14">
       <div className="flex items-center justify-between text-white font-bold mb-8">
         <div className="flex w-[45%] mb-5">
           <div className="w-[40%] mt-[10px]">

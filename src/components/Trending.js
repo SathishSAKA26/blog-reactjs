@@ -8,7 +8,7 @@ const Trending = ({ blogs }) => {
   const options = {
     loop: true,
     margin: 10,
-    new: true,
+    nev: true,
     Response: {
       0: {
         items: 1,
@@ -35,12 +35,12 @@ const Trending = ({ blogs }) => {
         {blogs?.map((item) => (
           <div className="item px-2" key={item.id}>
             <Link to={`/detail/${item.id}`}>
-              <div className="trending-img-position">
-                <div className="trending-img-size">
-                  <img src={item.imgUrl} alt={item.title} className="trending-img-relative" />
+              <div className="overflow-hidden z-[5] cursor-pointer">
+                <div className="h-[326px] overflow-hidden relative">
+                  <img src={item.imgUrl} alt={item.title} className="h-[400px] min-w-full relative" />
                 </div>
-                <div className="trending-img-absolute"></div>
-                <div className="trending-img-absolute-1">
+                <div className="absolute h-full w-full top-0 right-0 z-[7]"></div>
+                <div className="absolute w-full z-[9] p-[10px] bottom-0">
                   <span className="text-white">{item.title}</span>
                   <div className="trending-meta-info">
                     {item.author} - {item.timestamp.toDate().toDateString()}

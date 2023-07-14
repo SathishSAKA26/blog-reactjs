@@ -37,7 +37,7 @@ const Detail = ({ setActive }) => {
   }
 
   return (
-    <div className="pt-14 text-center text-white w-full h-[700px]">
+    <div className="text-center text-white w-full h-[700px]">
       <div className="bg-no-repeat bg-cover h-[600px]" style={{ backgroundImage: `url("${blog?.imgUrl}")` }}>
         <div className="font-bold pt-[600px]">
           <span className="">{blog?.timestamp.toDate().toDateString()}</span>
